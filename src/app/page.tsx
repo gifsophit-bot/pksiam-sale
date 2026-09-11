@@ -73,6 +73,7 @@ type Product = {
   unit: string;
   defaultPrice: string;
   taxRate: string;
+  taxCategory: "exempt" | "food" | "service" | "alcohol";
   stock: string;
   storageType: string;
   countryOfOrigin: string;
@@ -117,12 +118,12 @@ const initialCustomers: Customer[] = [
   { id: 3, companyName: "Siam Logistics", contactName: "Wichai S.", language: "ja", telephone: "+66 2 101 7744", email: "wichai@siamlogistics.co.th", billingAddress: "41 Rama IX Rd, Bangkok", shippingAddress: "41 Rama IX Rd, Bangkok", paymentTerms: "Net 45", salesperson: "Gaia S.", notes: "Fleet management", active: false },
 ];
 
-const emptyProduct: ProductForm = { sku: "", nameJa: "", nameEn: "", nameTh: "", unit: "pcs", defaultPrice: "", taxRate: "7", stock: "0", storageType: "Ambient", countryOfOrigin: "Thailand" };
+const emptyProduct: ProductForm = { sku: "", nameJa: "", nameEn: "", nameTh: "", unit: "pcs", defaultPrice: "", taxRate: "0", taxCategory: "exempt", stock: "0", storageType: "Ambient", countryOfOrigin: "Japan" };
 
 const initialProducts: Product[] = [
-  { id: 1, sku: "PK-COF-001", nameJa: "タイコーヒー", nameEn: "Thai Coffee", nameTh: "กาแฟไทย", unit: "bag", defaultPrice: "280.00", taxRate: "7", stock: "240", storageType: "Ambient", countryOfOrigin: "Thailand", active: true },
-  { id: 2, sku: "PK-TEA-014", nameJa: "ジャスミン茶", nameEn: "Jasmine Tea", nameTh: "ชามะลิ", unit: "box", defaultPrice: "145.00", taxRate: "7", stock: "86", storageType: "Ambient", countryOfOrigin: "Thailand", active: true },
-  { id: 3, sku: "PK-MNG-022", nameJa: "マンゴーピューレ", nameEn: "Mango Puree", nameTh: "มะม่วงบด", unit: "kg", defaultPrice: "190.00", taxRate: "0", stock: "0", storageType: "Chilled", countryOfOrigin: "Thailand", active: false },
+  { id: 1, sku: "PK-COF-001", nameJa: "タイコーヒー", nameEn: "Thai Coffee", nameTh: "กาแฟไทย", unit: "bag", defaultPrice: "2800", taxRate: "8", taxCategory: "food", stock: "240", storageType: "Ambient", countryOfOrigin: "Japan", active: true },
+  { id: 2, sku: "PK-TEA-014", nameJa: "ジャスミン茶", nameEn: "Jasmine Tea", nameTh: "ชามะลิ", unit: "box", defaultPrice: "1450", taxRate: "8", taxCategory: "food", stock: "86", storageType: "Ambient", countryOfOrigin: "Japan", active: true },
+  { id: 3, sku: "PK-MNG-022", nameJa: "ウイスキー", nameEn: "Japanese Whisky", nameTh: "วิสกี้ญี่ปุ่น", unit: "bottle", defaultPrice: "1900", taxRate: "10", taxCategory: "alcohol", stock: "0", storageType: "Ambient", countryOfOrigin: "Japan", active: false },
 ];
 
 const initialShipments: Shipment[] = [

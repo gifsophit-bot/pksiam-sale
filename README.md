@@ -8,6 +8,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 Only `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` belong in frontend environment variables. Never expose a Supabase service role key to the browser or commit real secrets.
 
+The application uses JPY as its currency. Japanese tax categories are `0%` exempt, `8%` for food, and `10%` for services and alcohol. The migration `20260911000001_jpy_currency_and_japan_tax.sql` updates existing records and enforces these rates.
+
 ## Getting Started
 
 First, run the development server:
