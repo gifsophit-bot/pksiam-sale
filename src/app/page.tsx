@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createSupabaseBrowserClient } from "../lib/supabase";
 import {
   Bell,
   Boxes,
@@ -135,13 +136,37 @@ export default function Home() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notice, setNotice] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState("");
+  const [authLoading, setAuthLoading] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
   const t = copy[language];
 
   const notify = (message: string) => { setNotice(message); window.setTimeout(() => setNotice(""), 2600); };
   const moduleLabel = t[activeModule];
 
+  const handleAuth = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setAuthError("");
+    setAuthLoading(true);
+    const supabase = createSupabaseBrowserClient();
+    if (!supabase) {
+      setAuthError("Supabase is not configured. Add the environment variables first.");
+      setAuthLoading(false);
+      return;
+    }
+    const result = isSignUp
+      ? await supabase.auth.signUp({ email, password })
+      : await supabase.auth.signInWithPassword({ email, password });
+    if (result.error) setAuthError(result.error.message);
+    else if (isSignUp && !result.data.session) setNotice("Account created. Check your email to confirm it.");
+    else setLoggedIn(true);
+    setAuthLoading(false);
+  };
+
   if (!loggedIn) {
-    return <main className="login-page"><div className="login-art"><div className="brand-mark">PK<span>S</span></div><div className="login-art-copy"><p>PKSIAM / SALES OPERATIONS</p><h1>{t.welcome}</h1><span>One clear view of every customer, quote, order, and delivery.</span></div><div className="art-grid" /></div><div className="login-panel"><div className="login-top"><div className="brand-word"><strong>PKSIAM</strong><span>SALES DESK</span></div><LanguageSelect language={language} setLanguage={setLanguage} /></div><div className="login-form"><div className="eyebrow">INTERNAL WORKSPACE</div><h2>{t.login}</h2><p>{t.loginNote}</p><label>{t.email}<input type="email" placeholder="name@pksiam.com" /></label><label>{t.password}<input type="password" placeholder="••••••••" /></label><button className="primary-action" onClick={() => setLoggedIn(true)}>{t.signIn}<ChevronRight size={16} /></button><div className="or"><span>or</span></div><button className="secondary-action" onClick={() => { setLoggedIn(true); notify(t.loginError); }}>{t.demo}</button></div><div className="login-footer"><CircleHelp size={15} />{t.help}<span>© PKSIAM</span></div></div></main>;
+    return <main className="login-page"><div className="login-art"><div className="brand-mark">PK<span>S</span></div><div className="login-art-copy"><p>PKSIAM / SALES OPERATIONS</p><h1>{t.welcome}</h1><span>One clear view of every customer, quote, order, and delivery.</span></div><div className="art-grid" /></div><div className="login-panel"><div className="login-top"><div className="brand-word"><strong>PKSIAM</strong><span>SALES DESK</span></div><LanguageSelect language={language} setLanguage={setLanguage} /></div><form className="login-form" onSubmit={handleAuth}><div className="eyebrow">INTERNAL WORKSPACE</div><h2>{isSignUp ? "Create account" : t.login}</h2><p>{isSignUp ? "Create a staff account with Supabase Auth." : t.loginNote}</p><label>{t.email}<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="name@pksiam.com" /></label><label>{t.password}<input required minLength={6} type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="••••••••" /></label>{authError && <p className="auth-error">{authError}</p>}<button className="primary-action" disabled={authLoading}>{authLoading ? "Please wait..." : isSignUp ? "Create account" : t.signIn}<ChevronRight size={16} /></button><button type="button" className="auth-switch" onClick={() => { setIsSignUp((current) => !current); setAuthError(""); }}>{isSignUp ? "Already have an account? Sign in" : "Create a new account"}</button><div className="or"><span>or</span></div><button type="button" className="secondary-action" onClick={() => { setLoggedIn(true); notify(t.loginError); }}>{t.demo}</button></form><div className="login-footer"><CircleHelp size={15} />{t.help}<span>© PKSIAM</span></div></div></main>;
   }
 
   return <main className="app-shell">
